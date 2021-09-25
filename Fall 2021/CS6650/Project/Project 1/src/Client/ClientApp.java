@@ -1,13 +1,12 @@
 package Client;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.util.HashMap;
+import java.util.logging.Level;
 
 public class ClientApp {
 
     public static void main(String[] args) throws IOException {
-        ClientLogger logger = new ClientLogger();
+        ClientLogger logger = new ClientLogger("Client.ClientApp", "");
         Client client;
         int port;
 
@@ -18,7 +17,7 @@ public class ClientApp {
         try {
             port = Integer.parseInt(args[1]);
         } catch (NumberFormatException e ) {
-            logger.debug("Incorrect Port Number");
+            logger.log(Level.CONFIG,"Incorrect Port Number");
             return;
         }
 
@@ -53,7 +52,6 @@ public class ClientApp {
                 logger.debug("Incorrect K/V operation");
             }
         }
-
-
+        client.execute(args);
     }
 }

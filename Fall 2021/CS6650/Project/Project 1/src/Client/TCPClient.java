@@ -2,27 +2,20 @@ package Client;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
+
+// Ref: https://github.com/ronak14329/Distributed-Key-Value-Store-Using-Sockets
 
 public class TCPClient extends AbstractClient{
 
-    Socket s1;
+    ClientLogger logger = new ClientLogger("Client.ClientApp", "");
 
     public TCPClient(String host, int port) throws IOException {
         super(host, port);
     }
 
-
-    @Override
-    public void createSocket() throws IOException {
-        s1 = new Socket(host, port);
-    }
-
     @Override
     public void execute(String[] args) throws IOException {
-        // Get a communication stream associated with the socket
-        OutputStream s1out = s1.getOutputStream();
-        DataOutputStream dos = new DataOutputStream (s1out);
-
         int i = 3;
         StringBuilder msg = new StringBuilder();
         while (i < args.length) {
@@ -33,29 +26,63 @@ public class TCPClient extends AbstractClient{
                 msg.append(args[i + 1]);
                 msg.append("$");
                 msg.append(args[i + 2]);
+                request(msg.toString());
                 i += 3;
             } else if (args[i].equalsIgnoreCase("GET")) {
                 msg.append(args[i]);
                 msg.append("$");
                 msg.append(args[i + 1]);
+                request(msg.toString());
                 i += 2;
             } else if (args[i].equalsIgnoreCase("DELETE")) {
                 msg.append(args[i]);
                 msg.append("$");
                 msg.append(args[i + 1]);
+                request(msg.toString());
                 i += 2;
             }
-            msg.append("$");
         }
-        msg.deleteCharAt(msg.length() - 1);
-        dos.writeUTF(msg.toString());
-
-        InputStream s1In = s1.getInputStream();
-        DataInputStream dis = new DataInputStream(s1In);
     }
 
     @Override
-    public void close() {
+    public void request(String msg) throws IOException {
+        // Get a communication stream associated with the socket
+        Socket s1 = new Socket(host, port);
+
+        // Get a communication stream associated with the socket
+        OutputStream s1out = s1.getOutputStream();
+        DataOutputStream dos = new DataOutputStream (s1out);
+        dos.writeUTF(msg);
+
+        InputStream s1In = s1.getInputStream();
+        DataInputStream dis = new DataInputStream(s1In);
+        String inputString = dis.readUTF();
+        AckFromServer(s1);
+        System.out.println(inputString);
+
+        dis.close();
+        s1In.close();
+        dos.close();
+        s1out.close();
+        s1.close();
 
     }
+
+    private void AckFromServer(Socket s) {
+        try {
+            DataInputStream inputStream = new DataInputStream(s.getInputStream());
+            s.setSoTimeout(1000);
+            String ackMessage = inputStream.readUTF();
+            logger.debug("Acknowledgement message2: " + ackMessage);
+        } catch (SocketTimeoutException e) {
+            logger.debug("Timeout: Server does not respond within 1000ms.");
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (Exception ex) {
+            logger.debug("Exception2: " + ex);
+        }
+    }
+
+
 }
