@@ -3,6 +3,7 @@ package Client;
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.sql.Timestamp;
 
 // Ref: https://github.com/ronak14329/Distributed-Key-Value-Store-Using-Sockets
 
@@ -25,14 +26,11 @@ public class TCPClient extends AbstractClient{
         DataOutputStream dos = new DataOutputStream (s1out);
         dos.writeUTF(msg);
 
-        InputStream s1In = s1.getInputStream();
-        DataInputStream dis = new DataInputStream(s1In);
-        String inputString = dis.readUTF();
-        AckFromServer(s1);
-        System.out.println(inputString);
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        logger.debug("Request sent.   " + timestamp);
 
-        dis.close();
-        s1In.close();
+        AckFromServer(s1);
+
         dos.close();
         s1out.close();
         s1.close();
@@ -41,17 +39,24 @@ public class TCPClient extends AbstractClient{
 
     private void AckFromServer(Socket s) {
         try {
-            DataInputStream inputStream = new DataInputStream(s.getInputStream());
+            InputStream s1In = s.getInputStream();
+            DataInputStream dis = new DataInputStream(s1In);
             s.setSoTimeout(1000);
-            String ackMessage = inputStream.readUTF();
-            logger.debug("TCP- Acknowledgement message: " + ackMessage);
+            String ackMessage = dis.readUTF();
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            logger.debug("TCP- Acknowledgement message: " + ackMessage + "   " + timestamp);
+            dis.close();
+            s1In.close();
         } catch (SocketTimeoutException e) {
-            logger.error("TCP- Timeout: Server does not respond within 1000ms.");
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            logger.error("TCP- Timeout: Server does not respond within 1000ms.   "  + timestamp);
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (Exception ex) {
-            logger.error("TCP- Exception: " + ex);
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            logger.error("TCP- Exception: " + ex + "   " + timestamp);
         }
+
     }
 }

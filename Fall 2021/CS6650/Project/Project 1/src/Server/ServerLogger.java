@@ -1,10 +1,18 @@
 package Server;
 
-import org.apache.log4j.Logger;
+public class ServerLogger {
 
-public class ServerLogger extends Logger {
+    String name;
 
     protected ServerLogger(String name) {
-        super(name);
+        this.name = name;
+    }
+
+    protected void debug(String msg) {
+        System.out.println(name + " DEBUG: " + msg);
+    }
+
+    protected void error(String msg) {
+        System.out.println(name + " ERROR: " + msg);
     }
 }

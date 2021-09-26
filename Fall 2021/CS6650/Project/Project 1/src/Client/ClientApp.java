@@ -1,6 +1,7 @@
 package Client;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.Scanner;
 
 public class ClientApp {
@@ -10,9 +11,16 @@ public class ClientApp {
     private static String[] del1, del2, del3, del4, del5;
 
     public static void main(String[] args) throws IOException {
+
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+
         ClientLogger logger = new ClientLogger("Client.ClientApp");
         Client client;
         int port;
+
+        if (args.length != 3) {
+            logger.error("Please enter command line correctly.   " + timestamp);
+        }
 
         // get IP
         String host = args[0];
@@ -21,7 +29,7 @@ public class ClientApp {
         try {
             port = Integer.parseInt(args[1]);
         } catch (NumberFormatException e ) {
-            logger.error("Incorrect Port Number");
+            logger.error("Incorrect Port Number.   " + timestamp);
             return;
         }
 
@@ -31,7 +39,7 @@ public class ClientApp {
         } else if (args[2].equalsIgnoreCase("UDP")) {
             client = new UDPClient(host, port);
         } else {
-            logger.error("Incorrect indication for TCP or UDP");
+            logger.error("Incorrect indication for TCP or UDP.   " + timestamp);
             return;
         }
 
@@ -61,10 +69,28 @@ public class ClientApp {
         // custom operations
 
         while (true) {
-            Scanner s = new Scanner(System.in);
-            String command = s.nextLine();
-            String[] operations =  command.split("\\s+");
-            client.execute(operations);
+
+            Scanner sc= new Scanner(System.in);
+            System.out.print("Enter an operation (PUT/GET/DELETE): ");
+            String op = sc.nextLine();
+
+            String[] operation = op.split("\\s+");
+
+            if (operation.length >= 2) {
+                if (operation[0].equalsIgnoreCase("PUT") && operation.length == 3) {
+                    client.execute(operation);
+                } else if (operation[0].equalsIgnoreCase("GET") && operation.length == 2) {
+                    client.execute(operation);
+                } else if (operation[0].equalsIgnoreCase("DELETE") && operation.length == 2) {
+                    client.execute(operation);
+                } else {
+                    errorOp();
+                }
+            } else if (operation[0].equalsIgnoreCase("CLOSE")) {
+                break;
+            } else {
+                errorOp();
+            }
         }
     }
 
@@ -91,5 +117,14 @@ public class ClientApp {
         del5 = new String[]{"del", "A"};
 
         put7 = new String[]{"put", "B", "2"};
+    }
+
+    private static void errorOp() {
+        String msg = "Operation format incorrect, please follow this format:\n"
+                + "PUT KEY VAULE\n"
+                + "GET KEY\n"
+                + "DELETE KEY\n"
+                + "If you would like to exit, please enter: close";
+        System.out.println(msg);
     }
 }

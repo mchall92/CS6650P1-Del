@@ -2,6 +2,7 @@ package Client;
 
 import java.io.IOException;
 import java.net.*;
+import java.sql.Timestamp;
 
 // Ref: https://github.com/ronak14329/Distributed-Key-Value-Store-Using-Sockets
 
@@ -18,10 +19,15 @@ public class UDPClient extends AbstractClient{
         DatagramSocket aSocket = null;
         try {
             aSocket = new DatagramSocket();
+            msg += "$!";
             byte [] m = msg.getBytes();
             InetAddress aHost = InetAddress.getByName(host);
             DatagramPacket request = new DatagramPacket(m, msg.length(), aHost, port);
             aSocket.send(request);
+
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            logger.debug("Request sent.   " + timestamp);
+
             AckFromServer(aSocket);
             aSocket.close();
         } catch (SocketException e) {
@@ -35,13 +41,19 @@ public class UDPClient extends AbstractClient{
             byte[] ackMsgBuffer = new byte[1000];
             DatagramPacket returnMsgPacket = new DatagramPacket(ackMsgBuffer, ackMsgBuffer.length);
             client.receive(returnMsgPacket);
-            logger.debug("UDP- Acknowledgement message: " + new String(returnMsgPacket.getData()));
+            String msg = new String(returnMsgPacket.getData());
+            msg = msg.substring(0, msg.indexOf("!"));
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            logger.debug("UDP- Acknowledgement message: " + msg + "   " + timestamp);
         } catch (SocketTimeoutException e) {
-            logger.error("UDP- Timeout: Server does not respond within 1000ms.");
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            logger.error("UDP- Timeout: Server does not respond within 1000ms.   " + timestamp);
         } catch (IOException e) {
-            logger.error("UDP- An exception has occurred: " + e);
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            logger.error("UDP- An exception has occurred: " + e + "   " + timestamp);
         } catch (Exception ex) {
-            logger.error("UDP- Exception: " + ex);
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            logger.error("UDP- Exception: " + ex + "   " + timestamp);
         }
     }
 }
