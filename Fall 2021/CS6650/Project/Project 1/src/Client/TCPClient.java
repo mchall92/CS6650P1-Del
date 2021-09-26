@@ -8,7 +8,7 @@ import java.net.SocketTimeoutException;
 
 public class TCPClient extends AbstractClient{
 
-    ClientLogger logger = new ClientLogger("Client.ClientApp", "");
+    ClientLogger logger = new ClientLogger("Client.ClientApp");
 
     public TCPClient(String host, int port) throws IOException {
         super(host, port);
@@ -73,16 +73,14 @@ public class TCPClient extends AbstractClient{
             DataInputStream inputStream = new DataInputStream(s.getInputStream());
             s.setSoTimeout(1000);
             String ackMessage = inputStream.readUTF();
-            logger.debug("Acknowledgement message2: " + ackMessage);
+            logger.debug("TCP- Acknowledgement message: " + ackMessage);
         } catch (SocketTimeoutException e) {
-            logger.debug("Timeout: Server does not respond within 1000ms.");
+            logger.error("TCP- Timeout: Server does not respond within 1000ms.");
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (Exception ex) {
-            logger.debug("Exception2: " + ex);
+            logger.error("TCP- Exception: " + ex);
         }
     }
-
-
 }

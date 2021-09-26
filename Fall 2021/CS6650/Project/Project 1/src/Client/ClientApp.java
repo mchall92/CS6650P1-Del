@@ -6,7 +6,7 @@ import java.util.logging.Level;
 public class ClientApp {
 
     public static void main(String[] args) throws IOException {
-        ClientLogger logger = new ClientLogger("Client.ClientApp", "");
+        ClientLogger logger = new ClientLogger("Client.ClientApp");
         Client client;
         int port;
 
@@ -17,39 +17,42 @@ public class ClientApp {
         try {
             port = Integer.parseInt(args[1]);
         } catch (NumberFormatException e ) {
-            logger.log(Level.CONFIG,"Incorrect Port Number");
+            logger.error("Incorrect Port Number");
             return;
         }
 
         // determine TCP/UDP
         if (args[2].equalsIgnoreCase("TCP")) {
             client = new TCPClient(host, port);
-        } else {
+        } else if (args[2].equalsIgnoreCase("UDP")) {
             client = new UDPClient(host, port);
+        } else {
+            logger.error("Incorrect indication for TCP or UDP");
+            return;
         }
 
         int i = 3;
         while (i < args.length) {
             if (args[i].equalsIgnoreCase("PUT")) {
                 if (args.length - i < 3) {
-                    logger.debug("Incorrect K/V operation");
+                    logger.error("Incorrect K/V operation");
                 } else {
                     i += 3;
                 }
             } else if (args[i].equalsIgnoreCase("GET")) {
                 if (args.length - i < 2) {
-                    logger.debug("Incorrect K/V operation");
+                    logger.error("Incorrect K/V operation");
                 } else {
                     i += 2;
                 }
             } else if (args[i].equalsIgnoreCase("DELETE")) {
                 if (args.length - i < 2) {
-                    logger.debug("Incorrect K/V operation");
+                    logger.error("Incorrect K/V operation");
                 } else {
                     i += 2;
                 }
             } else {
-                logger.debug("Incorrect K/V operation");
+                logger.error("Incorrect K/V operation");
             }
         }
         client.execute(args);

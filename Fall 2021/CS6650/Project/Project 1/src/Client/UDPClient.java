@@ -7,7 +7,7 @@ import java.net.*;
 
 public class UDPClient extends AbstractClient{
 
-    ClientLogger logger = new ClientLogger("Client.ClientApp", "");
+    ClientLogger logger = new ClientLogger("Client.ClientApp");
 
     public UDPClient(String host, int port) {
         super(host, port);
@@ -35,13 +35,13 @@ public class UDPClient extends AbstractClient{
             byte[] ackMsgBuffer = new byte[1000];
             DatagramPacket returnMsgPacket = new DatagramPacket(ackMsgBuffer, ackMsgBuffer.length);
             client.receive(returnMsgPacket);
-            logger.debug("Acknowledgement message: " + new String(returnMsgPacket.getData()));
+            logger.debug("UDP- Acknowledgement message: " + new String(returnMsgPacket.getData()));
         } catch (SocketTimeoutException e) {
-            logger.debug("Timeout: Server does not respond within 1000ms.");
+            logger.error("UDP- Timeout: Server does not respond within 1000ms.");
         } catch (IOException e) {
-            logger.debug("An exception has occured: " + e);
+            logger.error("UDP- An exception has occurred: " + e);
         } catch (Exception ex) {
-            logger.debug("Exception: " + ex);
+            logger.error("UDP- Exception: " + ex);
         }
     }
 }
