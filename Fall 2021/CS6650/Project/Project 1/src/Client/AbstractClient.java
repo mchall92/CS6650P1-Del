@@ -14,32 +14,25 @@ abstract class AbstractClient implements Client {
 
     @Override
     public void execute(String[] args) throws IOException {
-        int i = 3;
         StringBuilder msg = new StringBuilder();
-        while (i < args.length) {
-            msg = new StringBuilder();
-            if (args[i].equalsIgnoreCase("PUT")) {
-                msg.append(args[i]);
-                msg.append("$");
-                msg.append(args[i + 1]);
-                msg.append("$");
-                msg.append(args[i + 2]);
-                request(msg.toString());
-                i += 3;
-            } else if (args[i].equalsIgnoreCase("GET")) {
-                msg.append(args[i]);
-                msg.append("$");
-                msg.append(args[i + 1]);
-                request(msg.toString());
-                i += 2;
-            } else if (args[i].equalsIgnoreCase("DELETE")) {
-                msg.append(args[i]);
-                msg.append("$");
-                msg.append(args[i + 1]);
-                request(msg.toString());
-                i += 2;
-            }
+        msg = new StringBuilder();
+        if (args[0].equalsIgnoreCase("PUT")) {
+            msg.append(args[0]);
+            msg.append("$");
+            msg.append(args[1]);
+            msg.append("$");
+            msg.append(args[2]);
+            request(msg.toString());
+        } else if (args[0].equalsIgnoreCase("GET")) {
+            msg.append(args[0]);
+            msg.append("$");
+            msg.append(args[1]);
+            request(msg.toString());
+        } else if (args[0].equalsIgnoreCase("DELETE")) {
+            msg.append(args[0]);
+            msg.append("$");
+            msg.append(args[1]);
+            request(msg.toString());
         }
     }
-
 }

@@ -6,18 +6,18 @@ import java.net.Socket;
 
 public class TCPHandler extends AbstractHandler{
 
-    ServerSocket s;
+    ServerSocket socket;
 
-    public TCPHandler(int port, KeyValue KV, String log) throws IOException {
+    public TCPHandler(int port, KeyValue KV, String log) {
         super(port, KV, log);
-        s = new ServerSocket(port);
     }
 
     @Override
     public void execute() throws IOException {
         try {
+            socket = new ServerSocket(port);
             while (true) {
-                Socket s1 = s.accept();
+                Socket s1 = socket.accept();
 
                 // Get input stream
                 InputStream s1In = s1.getInputStream();
@@ -46,20 +46,26 @@ public class TCPHandler extends AbstractHandler{
 
     @Override
     public void close() throws IOException {
-        s.close();
+        socket.close();
     }
 
     private void putRequest(Socket client, String key, String value) {
-        logger.debug("PUT request received from " + client.getInetAddress() + " at Port " + client.getPort());
-        KV.put(key, value);
-        logger.debug("PUT request SUCCESS. Put (Key / Value) : (" + key + " / " + value + ")");
-        AckToClient(client, "PUT", key, value);
+        if (key.length() > 0) {
+            logger.debug("PUT request received from " + client.getInetAddress() + " at Port " + client.getPort());
+            KV.put(key, value);
+            logger.debug("PUT request SUCCESS. Put (Key / Value) : (" + key + " / " + value + ")");
+            AckToClient(client, "PUT", key, value);
 
-        // close socket
-        try {
-            client.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+            // close socket
+            try {
+                client.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            logger.error("Request content incorrect, no operation done:" +
+                                 "request from " + client.getInetAddress() + " at Port " + client.getPort());
+            AckToClient(client, "ERROR", "", "Request FAILED: Empty Key");
         }
     }
 
@@ -109,11 +115,11 @@ public class TCPHandler extends AbstractHandler{
             OutputStream s1out = client.getOutputStream();
             DataOutputStream dos = new DataOutputStream (s1out);
 
-            if (returnMsg != null && requestType.equalsIgnoreCase("PUT")) {
+            if (requestType != null && requestType.equalsIgnoreCase("PUT")) {
                 dos.writeUTF("PUT request SUCCESS. Put (Key / Value) : (" + key + " / " + returnMsg + ")");
-            } else if (returnMsg != null && requestType.equalsIgnoreCase("GET")) {
+            } else if (requestType != null && requestType.equalsIgnoreCase("GET")) {
                 dos.writeUTF("GET request SUCCESS. Key: " + key + ", maps to: " + returnMsg);
-            } else if (returnMsg != null && requestType.equalsIgnoreCase("DELETE")) {
+            } else if (requestType != null && requestType.equalsIgnoreCase("DELETE")) {
                 dos.writeUTF("DELETE request SUCCESS. Key: " + key + " deleted");
             } else {
                 // incorrect request
