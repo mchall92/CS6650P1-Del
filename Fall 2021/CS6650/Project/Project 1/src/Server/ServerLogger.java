@@ -9,10 +9,10 @@ public class ServerLogger {
     }
 
     protected void debug(String msg) {
-        System.out.println(name + " DEBUG: " + msg);
+        System.out.println(name + " LOG: " + msg);
     }
 
     protected void error(String msg) {
-        System.out.println(name + " ERROR: " + msg);
+        System.err.println(name + " ERROR: " + msg);
     }
 }

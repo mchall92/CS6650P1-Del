@@ -16,7 +16,6 @@ public class TCPHandler extends AbstractHandler{
     @Override
     public void execute() {
         try {
-
             socket = new ServerSocket(port);
             while (true) {
                 Timestamp timestamp = new Timestamp(System.currentTimeMillis());

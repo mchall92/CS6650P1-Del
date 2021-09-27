@@ -107,14 +107,14 @@ public class ClientApp {
         get4 = new String[]{"get", "D"};
         get5 = new String[]{"get", "A"};
 
-        del1 = new String[]{"del", "A"};
-        del2 = new String[]{"del", "B"};
-        del3 = new String[]{"del", "C"};
-        del4 = new String[]{"del", "D"};
+        del1 = new String[]{"delete", "A"};
+        del2 = new String[]{"delete", "B"};
+        del3 = new String[]{"delete", "C"};
+        del4 = new String[]{"delete", "D"};
 
         put6 = new String[]{"put", "A", "1"};
 
-        del5 = new String[]{"del", "A"};
+        del5 = new String[]{"delete", "A"};
 
         put7 = new String[]{"put", "B", "2"};
     }
