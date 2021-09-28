@@ -1,7 +1,4 @@
-package Server;
-
-import java.net.Socket;
-import java.util.HashMap;
+package server;
 
 abstract class AbstractHandler implements Server{
 

@@ -1,7 +1,4 @@
-package Server;
-
-import Client.TCPClient;
-import Client.UDPClient;
+package server;
 
 import java.io.IOException;
 import java.sql.Timestamp;

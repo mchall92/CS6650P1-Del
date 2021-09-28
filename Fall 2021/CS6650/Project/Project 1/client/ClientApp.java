@@ -4,20 +4,12 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.Scanner;
 
-/**
- * This is the class that starts Client
- */
 public class ClientApp {
 
     private static String[] put1, put2, put3, put4, put5, put6, put7;
     private static String[] get1, get2, get3, get4, get5;
     private static String[] del1, del2, del3, del4, del5;
 
-    /**
-     * Start a TCP or UDP server.
-     * @param args indicates host name, port number and TCP/UDP
-     * @throws IOException is thrown if sending request / receiving response error.
-     */
     public static void main(String[] args) throws IOException {
 
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
@@ -26,7 +18,6 @@ public class ClientApp {
         Client client;
         int port;
 
-        // args is consisted of host name, port number and TCP/UDP in order
         if (args.length != 3) {
             logger.error("Please enter command line correctly.   " + timestamp);
         }
@@ -75,7 +66,8 @@ public class ClientApp {
         client.execute(del5);
         client.execute(put7);
 
-        // custom operations\
+        // custom operations
+
         while (true) {
 
             Scanner sc= new Scanner(System.in);
@@ -84,9 +76,6 @@ public class ClientApp {
 
             String[] operation = op.split("\\s+");
 
-            // check if operation from user if correct
-            // if so, send request, if not, prompt user to input operation again
-            // and output instructions
             if (operation.length >= 2) {
                 if (operation[0].equalsIgnoreCase("PUT") && operation.length == 3) {
                     client.execute(operation);
@@ -105,9 +94,6 @@ public class ClientApp {
         }
     }
 
-    /**
-     * Hard-coded operations.
-     */
     private static void hardCodeArgs() {
         put1 = new String[]{"put", "A", "1"};
         put2 = new String[]{"put", "B", "2"};
@@ -133,9 +119,6 @@ public class ClientApp {
         put7 = new String[]{"put", "B", "2"};
     }
 
-    /**
-     * Response to user input error.
-     */
     private static void errorOp() {
         String msg = "Operation format incorrect, please follow this format:\n"
                 + "PUT KEY VAULE\n"

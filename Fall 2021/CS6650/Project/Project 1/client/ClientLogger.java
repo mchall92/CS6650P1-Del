@@ -1,10 +1,11 @@
-package Server;
+package client;
 
-public class ServerLogger {
+
+public class ClientLogger  {
 
     String name;
 
-    protected ServerLogger(String name) {
+    protected ClientLogger(String name) {
         this.name = name;
     }
 
@@ -15,4 +16,5 @@ public class ServerLogger {
     protected void error(String msg) {
         System.err.println(name + " ERROR: " + msg);
     }
+
 }

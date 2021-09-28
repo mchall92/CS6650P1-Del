@@ -1,9 +1,9 @@
-package client;
+package server;
 
 /**
- * This is a class for client logger
+ * This is a class for server logger
  */
-public class ClientLogger  {
+public class ServerLogger {
 
     String name;
 
@@ -11,7 +11,7 @@ public class ClientLogger  {
      * Construct logger with class name.
      * @param name is the name for the class that instantiate logger.
      */
-    protected ClientLogger(String name) {
+    protected ServerLogger(String name) {
         this.name = name;
     }
 
@@ -30,5 +30,4 @@ public class ClientLogger  {
     protected void error(String msg) {
         System.err.println(name + " ERROR: " + msg);
     }
-
 }
